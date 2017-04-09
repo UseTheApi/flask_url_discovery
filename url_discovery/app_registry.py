@@ -1,9 +1,9 @@
 #! /bin/usr/python3
 
-from flask import Flask, url_for, Blueprint, Response
-from flask.json import jsonify
-from multiprocessing import Process
-import json
+from flask import Flask, url_for, Blueprint
+from flask import jsonify
+import requests
+from http import HTTPStatus
 
 __author__ = "Alena Lifar"
 __email__ = "alenaslifar@gmail.com"
@@ -14,28 +14,16 @@ __date__ = "04/08/2017"
 UD_PATTERN = "url_discovery"  # unified url_discovery pattern
 
 
-a = Blueprint("a", __name__)
-
 links = dict()
 routes_url = "/config/routes/"
 
 
-class JSONyfiedResponse(Response):
-    @classmethod
-    def force_type(cls, rv, environ=None):
-        if isinstance(rv, dict):
-            rv = jsonify(rv)
-        return super(JSONyfiedResponse, cls).force_type(rv, environ)
+app = Flask(__name__)
 
 
-@a.route("/app/info/", methods=["GET", "POST"])
-def app_info():
-    return "Hello_world"
-
-
-@a.route("/app/test/", methods=["GET", "POST"])
+@app.route("/test/app/", methods=["GET"])
 def app_test():
-    return "HELLO_APP_TEST"
+    return "HELLO_APP"
 
 
 blue_url_discovery = Blueprint(UD_PATTERN, __name__)
@@ -44,7 +32,7 @@ blue_url_discovery = Blueprint(UD_PATTERN, __name__)
 @blue_url_discovery.route(routes_url, methods=["GET"])
 def expose_routes():
     global links
-    return json.dumps(links)
+    return jsonify(links) 
 
 
 def has_no_empty_params(rule):
@@ -71,7 +59,6 @@ def url_discovery(flask_application: Flask):
                 links[rule.endpoint].setdefault("active_urls", process_url_string(route))
                 links[rule.endpoint].setdefault("methods", list(rule.methods))
     flask_application.config['SERVER_NAME'] = server_name
-    print(links)
 
 
 def url_registry(flask_application: Flask):
@@ -80,15 +67,41 @@ def url_registry(flask_application: Flask):
     return flask_application
 
 
-server_args = {
-        "host": "0.0.0.0",
-        "port": 5000,
-}
+def obtain_urls(*args, https=False):
+    """
+    Obtain Urls requests routes from provided sources by requesting their registered API
+    :param args: a number of parameters of format: str - "host:port" or "domain_name"
+    :param https: boolean
+    :return: tuple:
+        success: boolean - True if all of the provided args are valid
+        url_collection: dict - dictionary of successfully requested urls
+        traceback: dict - traceback per invalid arg
+    """
+    base = "https://" if https else "http://"
+    url_collection = dict()
+    success = True
+    traceback = dict()
+
+    for dependent_host_port in args:
+        uri_string = base + dependent_host_port + routes_url
+        try:
+            r = requests.get(uri_string)
+            if r.status_code == HTTPStatus.OK:
+                dependent_urls_dict = r.json()
+            else:
+                traceback[dependent_host_port] = r
+                success = False
+                continue
+        except requests.exceptions.ConnectionError as e:
+            traceback[dependent_host_port] = e
+            success = False
+            continue
+        url_collection[dependent_host_port] = dependent_urls_dict
+    return success, url_collection, traceback
 
 
 if __name__ == "__main__":
-    app = Flask(__name__)
-    app.register_blueprint(a)
     url_registry(app)
     app.run("0.0.0.0", port=5000)
+    # s, c, t = obtain_urls("localhost:6000", "localhost:5000")
 
