@@ -21,9 +21,24 @@ routes_url = "/config/routes/"
 app = Flask(__name__)
 
 
-@app.route("/test/app/", methods=["GET"])
+@app.route("/test/app/", methods=["GET"], endpoint="FOO")
 def app_test():
     return "HELLO_APP"
+
+
+@app.route("/app/new/", methods=["GET"])
+def app_new():
+    return "HELLO_WORLD"
+
+
+@app.route("/app/another", methods=["GET"])
+def app_another():
+    return "yet another"
+
+
+@app.route("/test/boo/", methods=["GET"])
+def t():
+    return "foo"
 
 
 blue_url_discovery = Blueprint(UD_PATTERN, __name__)

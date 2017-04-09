@@ -17,3 +17,4 @@ instance/
 # Sphinx documentation
 docs/_build/
 
+.cache/
