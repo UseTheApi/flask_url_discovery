@@ -24,8 +24,8 @@ def test_app():
     return "Testing APP"
 
 
-test_response = """{"url_discovery.expose_routes": {"active_urls": "/config/routes/",
-"methods": ["HEAD", "OPTIONS", "GET"]}, "test_app": {"active_urls": "/test/app",
+test_response = """{"url_discovery.expose_routes": {"active_url": "/config/routes/",
+"methods": ["HEAD", "OPTIONS", "GET"]}, "test_app": {"active_url": "/test/app",
 "methods": ["HEAD", "OPTIONS", "GET"]}}"""
 
 

@@ -71,7 +71,7 @@ def url_discovery(flask_application: Flask):
             if has_no_empty_params(rule):
                 links[rule.endpoint] = dict()
                 route = url_for(rule.endpoint, **(rule.defaults or {}))
-                links[rule.endpoint].setdefault("active_urls", process_url_string(route))
+                links[rule.endpoint].setdefault("active_url", process_url_string(route))
                 links[rule.endpoint].setdefault("methods", list(rule.methods))
     flask_application.config['SERVER_NAME'] = server_name
 
