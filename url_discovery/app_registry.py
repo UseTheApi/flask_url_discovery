@@ -21,6 +21,41 @@ routes_url = "/config/routes/"
 app = Flask(__name__)
 
 
+class UrlDiscovery(object):
+    routes_url = "/config/routes"
+    links = dict()
+    private_endpoints = list()
+    private_blueprints_names = list()
+    blue_url_discovery = Blueprint(UD_PATTERN, __name__)
+
+    @classmethod
+    def add_private_link(cls, name):
+        print("ADD PRIVATE LINK")
+        cls.private_endpoints.append(name)
+
+    @classmethod
+    def add_private_bp(cls, bp):
+        print("ADD PRIVATE BP")
+        cls.private_blueprints_names.append(bp.name)
+
+    @staticmethod
+    def private(bp=None):
+        if bp:
+            UrlDiscovery.add_private_bp(bp)
+            return bp
+
+        def decorator(func):
+            UrlDiscovery.add_private_link(func.__name__)
+            return
+        return decorator
+
+
+@UrlDiscovery.blue_url_discovery.route(routes_url, methods=["GET"])
+def expose_routes():
+    return jsonify(UrlDiscovery.links)
+
+
+@UrlDiscovery.private()
 @app.route("/test/app/", methods=["GET"], endpoint="FOO")
 def app_test():
     return "HELLO_APP"
@@ -39,15 +74,6 @@ def app_another():
 @app.route("/test/boo/", methods=["GET"])
 def t():
     return "foo"
-
-
-blue_url_discovery = Blueprint(UD_PATTERN, __name__)
-
-
-@blue_url_discovery.route(routes_url, methods=["GET"])
-def expose_routes():
-    global links
-    return jsonify(links)
 
 
 def validate_blueprint(endpoint):
@@ -83,8 +109,7 @@ def get_route(rule):
 
 
 def url_discovery(flask_application: Flask):
-    global links
-    links.clear()
+    UrlDiscovery.links.clear()
     server_name = flask_application.config['SERVER_NAME']
     flask_application.config['SERVER_NAME'] = "url_discovery"
     with flask_application.app_context():
@@ -94,13 +119,13 @@ def url_discovery(flask_application: Flask):
 
         rules_and_routes = [(rule, get_route(rule)) for rule in non_empty_rules]
 
-        links = {rule.endpoint: construct_link_dict(rule, route) for rule, route in rules_and_routes}
+        UrlDiscovery.links = {rule.endpoint: construct_link_dict(rule, route) for rule, route in rules_and_routes}
 
     flask_application.config['SERVER_NAME'] = server_name
 
 
 def url_registry(flask_application: Flask):
-    flask_application.register_blueprint(blue_url_discovery)
+    flask_application.register_blueprint(UrlDiscovery.blue_url_discovery)
     url_discovery(flask_application)
     return flask_application
 
