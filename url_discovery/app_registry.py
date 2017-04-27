@@ -47,9 +47,19 @@ blue_url_discovery = Blueprint(UD_PATTERN, __name__)
 @blue_url_discovery.route(routes_url, methods=["GET"])
 def expose_routes():
     global links
-    return jsonify(links) 
+    return jsonify(links)
 
 
+def validate_blueprint(endpoint):
+    bp = endpoint.split(".")
+    if len(bp) > 1:
+        print("PRIVATE")
+
+    print(bp)
+    return True
+
+
+# http://stackoverflow.com/questions/13317536/get-a-list-of-all-routes-defined-in-the-app#13318415
 def has_no_empty_params(rule):
     defaults = rule.defaults if rule.defaults is not None else ()
     arguments = rule.arguments if rule.arguments is not None else ()
@@ -61,18 +71,31 @@ def process_url_string(url: str):
     return "".join(url_list[1:])
 
 
+def construct_link_dict(rule, route):
+    return dict(
+        active_urls=process_url_string(route),
+        methods=list(rule.methods)
+    )
+
+
+def get_route(rule):
+    return url_for(rule.endpoint, **(rule.defaults or {}))
+
+
 def url_discovery(flask_application: Flask):
     global links
     links.clear()
     server_name = flask_application.config['SERVER_NAME']
     flask_application.config['SERVER_NAME'] = "url_discovery"
     with flask_application.app_context():
-        for rule in flask_application.url_map.iter_rules():
-            if has_no_empty_params(rule):
-                links[rule.endpoint] = dict()
-                route = url_for(rule.endpoint, **(rule.defaults or {}))
-                links[rule.endpoint].setdefault("active_url", process_url_string(route))
-                links[rule.endpoint].setdefault("methods", list(rule.methods))
+        non_empty_rules = [rule for rule in flask_application.url_map.iter_rules()
+                           if has_no_empty_params(rule)
+                           and validate_blueprint(rule.endpoint)]
+
+        rules_and_routes = [(rule, get_route(rule)) for rule in non_empty_rules]
+
+        links = {rule.endpoint: construct_link_dict(rule, route) for rule, route in rules_and_routes}
+
     flask_application.config['SERVER_NAME'] = server_name
 
 
