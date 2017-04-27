@@ -42,7 +42,7 @@ class TestDiscovery(unittest.TestCase):
         """
         print()
         print("======== Testing Url Discovery ========")
-        response_obj = self.registered_app.get(app_registry.routes_url)
+        response_obj = self.registered_app.get(app_registry.UrlDiscovery.routes_url)
         print(response_obj.data.decode("utf-8"))
         self.assertEquals(json.loads(test_response).keys(), json.loads(response_obj.data.decode("utf-8")).keys())
 

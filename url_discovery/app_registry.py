@@ -13,29 +13,27 @@ __date__ = "04/08/2017"
 
 UD_PATTERN = "url_discovery"  # unified url_discovery pattern
 
-
-links = dict()
-routes_url = "/config/routes/"
-
-
 app = Flask(__name__)
 
 
 class UrlDiscovery(object):
-    routes_url = "/config/routes"
+    routes_url = "/config/routes/"
     links = dict()
     private_endpoints = list()
     private_blueprints_names = list()
     blue_url_discovery = Blueprint(UD_PATTERN, __name__)
+    flask_app = None
 
     @classmethod
-    def add_private_link(cls, name):
-        print("ADD PRIVATE LINK")
-        cls.private_endpoints.append(name)
+    def add_private_link(cls, func):
+        with app.app_context():
+            print(app.view_functions)
+            item = func.__name__ if func in app.view_functions \
+                else [endpoint for endpoint in app.view_functions.keys() if app.view_functions[endpoint] is func][0]
+        cls.private_endpoints.append(item)
 
     @classmethod
     def add_private_bp(cls, bp):
-        print("ADD PRIVATE BP")
         cls.private_blueprints_names.append(bp.name)
 
     @staticmethod
@@ -45,12 +43,12 @@ class UrlDiscovery(object):
             return bp
 
         def decorator(func):
-            UrlDiscovery.add_private_link(func.__name__)
+            UrlDiscovery.add_private_link(func)
             return
         return decorator
 
 
-@UrlDiscovery.blue_url_discovery.route(routes_url, methods=["GET"])
+@UrlDiscovery.blue_url_discovery.route(UrlDiscovery.routes_url, methods=["GET"])
 def expose_routes():
     return jsonify(UrlDiscovery.links)
 
@@ -66,6 +64,7 @@ def app_new():
     return "HELLO_WORLD"
 
 app_b = UrlDiscovery.private(Blueprint("app_b", __name__))
+
 
 @app_b.route("/app/another", methods=["GET"], endpoint="BOOYA")
 def app_another():
@@ -110,7 +109,7 @@ def get_route(rule):
 
 
 def url_discovery(flask_application: Flask):
-    print("Privaate Endpoints", UrlDiscovery.private_endpoints)
+    print("Private Endpoints", UrlDiscovery.private_endpoints)
     print("Private Blueprints", UrlDiscovery.private_blueprints_names)
     UrlDiscovery.links.clear()
     server_name = flask_application.config['SERVER_NAME']
@@ -129,6 +128,7 @@ def url_discovery(flask_application: Flask):
 
 def url_registry(flask_application: Flask):
     flask_application.register_blueprint(UrlDiscovery.blue_url_discovery)
+    UrlDiscovery.flask_app = flask_application
     url_discovery(flask_application)
     return flask_application
 
@@ -149,7 +149,7 @@ def obtain_urls(*args, https=False):
     traceback = dict()
 
     for dependent_host_port in args:
-        uri_string = base + dependent_host_port + routes_url
+        uri_string = base + dependent_host_port + UrlDiscovery.routes_url
         try:
             r = requests.get(uri_string)
             if r.status_code == HTTPStatus.OK:
@@ -169,6 +169,7 @@ def obtain_urls(*args, https=False):
 if __name__ == "__main__":
     app.register_blueprint(app_b)
     url_registry(app)
+    print(app.url_map)
     app.run("0.0.0.0", port=5000)
     # s, c, t = obtain_urls("localhost:6000", "localhost:5000")
 
