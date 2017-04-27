@@ -65,24 +65,25 @@ def app_test():
 def app_new():
     return "HELLO_WORLD"
 
+app_b = UrlDiscovery.private(Blueprint("app_b", __name__))
 
-@app.route("/app/another", methods=["GET"])
+@app_b.route("/app/another", methods=["GET"], endpoint="BOOYA")
 def app_another():
     return "yet another"
 
 
-@app.route("/test/boo/", methods=["GET"])
+@app_b.route("/test/boo/", methods=["GET"])
 def t():
     return "foo"
 
 
 def validate_blueprint(endpoint):
-    bp = endpoint.split(".")
-    if len(bp) > 1:
-        print("PRIVATE")
+    endpoint_list = endpoint.split(".")
+    return False if len(endpoint_list) > 1 and endpoint_list[0] in UrlDiscovery.private_blueprints_names else True
 
-    print(bp)
-    return True
+
+def validate_route(endpoint):
+    return False if endpoint in UrlDiscovery.private_endpoints else True
 
 
 # http://stackoverflow.com/questions/13317536/get-a-list-of-all-routes-defined-in-the-app#13318415
@@ -109,13 +110,15 @@ def get_route(rule):
 
 
 def url_discovery(flask_application: Flask):
+    print("Privaate Endpoints", UrlDiscovery.private_endpoints)
+    print("Private Blueprints", UrlDiscovery.private_blueprints_names)
     UrlDiscovery.links.clear()
     server_name = flask_application.config['SERVER_NAME']
     flask_application.config['SERVER_NAME'] = "url_discovery"
     with flask_application.app_context():
         non_empty_rules = [rule for rule in flask_application.url_map.iter_rules()
                            if has_no_empty_params(rule)
-                           and validate_blueprint(rule.endpoint)]
+                           and validate_blueprint(rule.endpoint) and validate_route(rule.endpoint)]
 
         rules_and_routes = [(rule, get_route(rule)) for rule in non_empty_rules]
 
@@ -164,6 +167,7 @@ def obtain_urls(*args, https=False):
 
 
 if __name__ == "__main__":
+    app.register_blueprint(app_b)
     url_registry(app)
     app.run("0.0.0.0", port=5000)
     # s, c, t = obtain_urls("localhost:6000", "localhost:5000")
