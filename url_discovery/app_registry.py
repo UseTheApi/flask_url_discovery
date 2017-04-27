@@ -13,8 +13,6 @@ __date__ = "04/08/2017"
 
 UD_PATTERN = "url_discovery"  # unified url_discovery pattern
 
-app = Flask(__name__)
-
 
 class UrlDiscovery(object):
     routes_url = "/config/routes/"
@@ -26,18 +24,53 @@ class UrlDiscovery(object):
 
     @classmethod
     def add_private_link(cls, func):
-        with app.app_context():
-            print(app.view_functions)
-            item = func.__name__ if func in app.view_functions \
-                else [endpoint for endpoint in app.view_functions.keys() if app.view_functions[endpoint] is func][0]
+        """
+        Maps view_func to an endpoint and stores in the collection
+        :param func: decorated function
+        :return: void
+        """
+        with cls.flask_app.app_context():
+            print(cls.flask_app.view_functions)
+            item = func.__name__ if func in cls.flask_app.view_functions \
+                else [endpoint for endpoint in cls.flask_app.view_functions.keys()
+                      if cls.flask_app.view_functions[endpoint] is func][0]
         cls.private_endpoints.append(item)
 
     @classmethod
     def add_private_bp(cls, bp):
+        """
+        Adds a Blueprint name into collection
+        :param bp: flask Blueprint
+        :return:
+        """
         cls.private_blueprints_names.append(bp.name)
 
     @staticmethod
     def private(bp=None):
+        """
+        Function and Decorator that allows a user to private some urls and blueprints
+        Usage:
+            with routes:
+
+        @UrlDiscovery.private()
+        @app.route("/route/", methods=["GET"], **options)
+        def view_func():
+            ...
+
+            with blueprints:
+
+        some_bp = UrlDiscovery.private(Blueprint("name", __name__))
+
+        or
+
+        some_bp = Blueprint("name", __name__)
+        UrlDiscovery.private(some_bp)
+
+        UrlDiscovery.private does not modify route or blueprint
+
+        :param bp: flask Blueprint
+        :return: func
+        """
         if bp:
             UrlDiscovery.add_private_bp(bp)
             return bp
@@ -50,49 +83,40 @@ class UrlDiscovery(object):
 
 @UrlDiscovery.blue_url_discovery.route(UrlDiscovery.routes_url, methods=["GET"])
 def expose_routes():
+    """
+    Route for exposed URL of a service
+    :return: links
+    """
     return jsonify(UrlDiscovery.links)
-
-
-@UrlDiscovery.private()
-@app.route("/test/app/", methods=["GET"], endpoint="FOO")
-def app_test():
-    return "HELLO_APP"
-
-
-@app.route("/app/new/", methods=["GET"])
-def app_new():
-    return "HELLO_WORLD"
-
-app_b = UrlDiscovery.private(Blueprint("app_b", __name__))
-
-
-@app_b.route("/app/another", methods=["GET"], endpoint="BOOYA")
-def app_another():
-    return "yet another"
-
-
-@app_b.route("/test/boo/", methods=["GET"])
-def t():
-    return "foo"
 
 
 def validate_blueprint(endpoint):
     endpoint_list = endpoint.split(".")
-    return False if len(endpoint_list) > 1 and endpoint_list[0] in UrlDiscovery.private_blueprints_names else True
+    return not len(endpoint_list) > 1 or not endpoint_list[0] in UrlDiscovery.private_blueprints_names
 
 
 def validate_route(endpoint):
-    return False if endpoint in UrlDiscovery.private_endpoints else True
+    return endpoint not in UrlDiscovery.private_endpoints
 
 
 # http://stackoverflow.com/questions/13317536/get-a-list-of-all-routes-defined-in-the-app#13318415
 def has_no_empty_params(rule):
+    """
+    http://stackoverflow.com/questions/13317536/get-a-list-of-all-routes-defined-in-the-app#13318415
+    :param rule: Rule werkzeug
+    :return: boolean
+    """
     defaults = rule.defaults if rule.defaults is not None else ()
     arguments = rule.arguments if rule.arguments is not None else ()
     return len(defaults) >= len(arguments)
 
 
 def process_url_string(url: str):
+    """
+    Stores only uri routes without hostname
+    :param url: str
+    :return: str
+    """
     url_list = url.split(UD_PATTERN)
     return "".join(url_list[1:])
 
@@ -105,28 +129,48 @@ def construct_link_dict(rule, route):
 
 
 def get_route(rule):
-    return url_for(rule.endpoint, **(rule.defaults or {}))
+    """
+    Get route by an rule endpoint using url_for
+    :param rule: Rule werkzeug
+    :return: route
+    """
+    with UrlDiscovery.flask_app.app_context():
+        return url_for(rule.endpoint, **(rule.defaults or {}))
 
 
 def url_discovery(flask_application: Flask):
+    """
+    Iterates through url_map and filters rules to expose available routes for a service
+    Fills UrlDiscovery.links dict
+    :param flask_application: Flask
+    :return: void
+    """
     print("Private Endpoints", UrlDiscovery.private_endpoints)
     print("Private Blueprints", UrlDiscovery.private_blueprints_names)
     UrlDiscovery.links.clear()
     server_name = flask_application.config['SERVER_NAME']
     flask_application.config['SERVER_NAME'] = "url_discovery"
-    with flask_application.app_context():
-        non_empty_rules = [rule for rule in flask_application.url_map.iter_rules()
-                           if has_no_empty_params(rule)
-                           and validate_blueprint(rule.endpoint) and validate_route(rule.endpoint)]
+    non_empty_rules = [rule for rule in flask_application.url_map.iter_rules()
+                       if has_no_empty_params(rule)
+                       and validate_blueprint(rule.endpoint) and validate_route(rule.endpoint)]
 
-        rules_and_routes = [(rule, get_route(rule)) for rule in non_empty_rules]
+    rules_and_routes = [(rule, get_route(rule)) for rule in non_empty_rules]
 
-        UrlDiscovery.links = {rule.endpoint: construct_link_dict(rule, route) for rule, route in rules_and_routes}
+    UrlDiscovery.links = {rule.endpoint: construct_link_dict(rule, route) for rule, route in rules_and_routes}
 
     flask_application.config['SERVER_NAME'] = server_name
 
 
 def url_registry(flask_application: Flask):
+    """
+    Registers flask application within url discovery
+    discovers all available routes for the app and exposing it at a new route
+
+    by default: http://{uri}/config/routes/
+    you may reset this route by setting UrlDiscovery.routes_url
+    :param flask_application: Flask
+    :return: void
+    """
     flask_application.register_blueprint(UrlDiscovery.blue_url_discovery)
     UrlDiscovery.flask_app = flask_application
     url_discovery(flask_application)
@@ -167,7 +211,8 @@ def obtain_urls(*args, https=False):
 
 
 if __name__ == "__main__":
-    app.register_blueprint(app_b)
+    app = Flask(__name__)
+    # app.register_blueprint(app_b)
     url_registry(app)
     print(app.url_map)
     app.run("0.0.0.0", port=5000)
