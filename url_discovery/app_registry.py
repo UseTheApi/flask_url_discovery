@@ -80,14 +80,33 @@ class UrlDiscovery(object):
             return
         return decorator
 
+    @classmethod
+    def register(cls, application):
+        """
+        Assigns application to class property flask_app
+        Wraps flask run() method in order to invoke url discovery on the run()
+        :param application: Flask
+        :return: void
+        """
+        cls.flask_app = application
+        UrlDiscovery.blue_url_discovery.add_url_rule(
+            UrlDiscovery.routes_url, 'expose_routes', cls.expose_routes, methods=["GET"]
+        )
+        run_func = getattr(application, "run")
 
-@UrlDiscovery.blue_url_discovery.route(UrlDiscovery.routes_url, methods=["GET"])
-def expose_routes():
-    """
-    Route for exposed URL of a service
-    :return: links
-    """
-    return jsonify(UrlDiscovery.links)
+        def url_discovery_run(*args, **kwargs):
+            url_discovery(application)
+            return run_func(*args, **kwargs)
+
+        setattr(application, "run", url_discovery_run)
+
+    @classmethod
+    def expose_routes(cls):
+        """
+        Route for exposed URL of a service
+        :return: links
+        """
+        return jsonify(cls.links)
 
 
 def validate_blueprint(endpoint):
@@ -161,19 +180,21 @@ def url_discovery(flask_application: Flask):
     flask_application.config['SERVER_NAME'] = server_name
 
 
-def url_registry(flask_application: Flask):
+def url_registry(flask_application: Flask, custom_uri=None):
     """
     Registers flask application within url discovery
     discovers all available routes for the app and exposing it at a new route
 
     by default: http://{uri}/config/routes/
-    you may reset this route by setting UrlDiscovery.routes_url
+    you may reset this route by setting providing custom_url parameter
     :param flask_application: Flask
+    :param custom_uri: string - custom uri for routes
     :return: void
     """
+    if custom_uri:
+        UrlDiscovery.routes_url = custom_uri
+    UrlDiscovery.register(flask_application)
     flask_application.register_blueprint(UrlDiscovery.blue_url_discovery)
-    UrlDiscovery.flask_app = flask_application
-    url_discovery(flask_application)
     return flask_application
 
 
