@@ -6,6 +6,10 @@ import unittest
 
 from ..flask_url_discovery.app_registry import discover_urls
 
+__author__ = "Alena Lifar"
+__email__ = "alenaslifar@gmail.com"
+__date__ = "05/08/2017"
+
 TEST_BLUEPRINT_NAME = 'test_bp1'
 
 app1_simple_case_links = ['test_route2', 'test_route1', 'static']

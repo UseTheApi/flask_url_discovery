@@ -4,9 +4,7 @@ from flask import Blueprint
 
 __author__ = "Alena Lifar"
 __email__ = "alenaslifar@gmail.com"
-__version__ = "0.0.1"
-__phase__ = "alpha"
-__date__ = "04/08/2017"
+__date__ = "05/08/2017"
 
 UD_PATTERN = "flask_url_discovery"
 
