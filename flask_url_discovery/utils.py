@@ -1,0 +1,43 @@
+#! /bin/usr/python3
+
+from flask import url_for, current_app
+
+from . import urls_privation
+
+__author__ = "Alena Lifar"
+__email__ = "alenaslifar@gmail.com"
+__version__ = "0.0.1"
+__phase__ = "alpha"
+__date__ = "04/08/2017"
+
+
+def validate_blueprint(endpoint):
+    return endpoint not in [bp_name.name for bp_name in urls_privation.private_blueprints]
+
+
+def validate_route(endpoint):
+    with current_app.app_context():
+        return not current_app.view_functions.get(endpoint, None) in urls_privation.private_view_functions
+
+
+def validate_endpoint(endpoint):
+    endpoint_list = endpoint.split(".")
+    return validate_blueprint(endpoint_list[0]) if len(endpoint_list) > 1 else validate_route(endpoint)
+
+
+def construct_link_dict(rule, route):
+    route_list = [route]
+    return dict(
+        active_urls=route_list,
+        methods=list(rule.methods)
+    )
+
+
+def get_route(rule):
+    """
+    Get route by an rule endpoint using url_for
+    :param rule: Rule werkzeug
+    :return: route
+    """
+    with current_app.app_context():
+        return url_for(rule.endpoint, **(rule.defaults or {}))
