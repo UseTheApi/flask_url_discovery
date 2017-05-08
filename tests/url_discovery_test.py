@@ -132,20 +132,20 @@ class UrlDiscoveryTest(unittest.TestCase):
 
         [self.assertIn(test_url_prefix, link) for link in link_list]
 
-    def test_UrlDiscoveryMultipleRules(self):
+    def test_DiscoverUrlsMultipleRules(self):
         """
         Assigns multiple rules to an endpoint
         Collects routes from url_map that gets mapped to name of a view_function or endpoint.
         Validates result dictionary that gets stored directly in the flask application
         :return: void
         """
+        print()
+        print("====== TEST DISCOVER URLS MULTIPLE RULES ======")
 
         @self.app1.route('/test/multiple/')
         @self.app1.route('/test/routes/')
         def multiple_routes():
             return
-
-        print(self.app1.url_map)
 
         discover_urls(self.app1)
         print("Collected Links: ", self.app1.ud_links)

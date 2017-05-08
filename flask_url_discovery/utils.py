@@ -1,6 +1,6 @@
 #! /bin/usr/python3
 
-from flask import url_for, current_app
+from flask import current_app
 
 from . import urls_privation
 
@@ -29,13 +29,3 @@ def construct_link_dict(rule, route):
         active_urls=route_list,
         methods=list(rule.methods)
     )
-
-
-def get_route(rule):
-    """
-    Get route by an rule endpoint using url_for
-    :param rule: Rule werkzeug
-    :return: route
-    """
-    with current_app.app_context():
-        return url_for(rule.endpoint, **(rule.defaults or {}))
