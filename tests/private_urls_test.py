@@ -1,10 +1,14 @@
 #! /bin/usr/python3
 
+from flask import Flask
+
 from .test_base import TestBase
 from ..flask_url_discovery.urls_privation import private
 from ..flask_url_discovery.app_registry import discover_urls
 
 app1_simple_case_links = ['test_route1', 'static']
+
+app1_private_blueprint_links = ['static']
 
 
 class TestPrivateUrls(TestBase):
@@ -67,9 +71,11 @@ class TestPrivateUrls(TestBase):
         print()
         print("====== TEST PRIVATE BLUEPRINT ======")
 
-        private(self.blueprint1)
-        self.app1.register_blueprint(self.blueprint1)
+        app2 = Flask(__name__)
 
-        discover_urls(self.app1)
-        print("Collected Links: ", self.app1.ud_links)
-        self.assertEqual(list(self.app1.ud_links.keys()), app1_simple_case_links)
+        private(self.private_blueprint)
+        app2.register_blueprint(self.private_blueprint)
+
+        discover_urls(app2)
+        print("Collected Links: ", app2.ud_links)
+        self.assertEqual(list(app2.ud_links.keys()), app1_private_blueprint_links)

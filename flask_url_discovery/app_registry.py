@@ -2,10 +2,6 @@
 
 from flask import current_app, jsonify
 
-# import flask_url_discovery.env as env
-# import flask_url_discovery.utils as utils
-# import flask_url_discovery.urls_privation as urls_privation
-
 from . import env, utils, urls_privation
 
 __author__ = "Alena Lifar"

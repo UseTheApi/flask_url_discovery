@@ -77,7 +77,9 @@ class UrlDiscoveryTest(TestBase):
         print()
         print("====== TEST DISCOVER URLS FROM BLUEPRINT ======")
 
-        self.app1.register_blueprint(self.blueprint1)
+        self.app1.register_blueprint(self.public_blueprint1)
+
+        print(self.app1.url_map)
 
         discover_urls(self.app1)
         print("Collected Links: ", self.app1.ud_links)
@@ -95,7 +97,7 @@ class UrlDiscoveryTest(TestBase):
 
         test_url_prefix = "/test_prefix"
 
-        self.app1.register_blueprint(self.blueprint1, url_prefix=test_url_prefix)
+        self.app1.register_blueprint(self.public_blueprint1, url_prefix=test_url_prefix)
 
         discover_urls(self.app1)
         print("Collected Links: ", self.app1.ud_links)
