@@ -1,8 +1,6 @@
 #! /bin/usr/python3
 
-from flask import Flask, Blueprint
-
-import unittest
+from .test_base import TestBase
 
 from ..flask_url_discovery.app_registry import discover_urls
 
@@ -22,35 +20,10 @@ app1_registered_blueprint = ['{}.bp_test_route1'.format(TEST_BLUEPRINT_NAME),
                              'static']
 
 
-class UrlDiscoveryTest(unittest.TestCase):
+class UrlDiscoveryTest(TestBase):
 
     def setUp(self):
-        self.app1 = Flask('test_app1')
-        self.blueprint1 = Blueprint(TEST_BLUEPRINT_NAME, __name__)
-
-        @self.app1.route('/test/')
-        def test_route1():
-            """
-            Test url_rule + view_function
-            :return: void
-            """
-            return
-
-        @self.blueprint1.route('/bp_route1/')
-        def bp_test_route1():
-            """
-            Test url_rule + view_function
-            :return: void
-            """
-            return
-
-        @self.blueprint1.route('/bp_route2/', endpoint='bp_test_endpoint')
-        def bp_test_route2():
-            """
-            Test url_rule + view_function. Custom endpoint is used
-            :return: void
-            """
-            return
+        super().setUp()
 
     def test_DiscoverUrls(self):
         """
