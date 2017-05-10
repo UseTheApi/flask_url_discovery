@@ -2,7 +2,8 @@
 
 from flask import current_app, jsonify
 
-from . import env, utils, urls_privation
+
+from flask_url_discovery import env, utils
 
 __author__ = "Alena Lifar"
 __email__ = "alenaslifar@gmail.com"

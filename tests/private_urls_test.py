@@ -3,8 +3,9 @@
 from flask import Flask
 
 from .test_base import TestBase
-from ..flask_url_discovery.urls_privation import private
-from ..flask_url_discovery.app_registry import discover_urls
+from flask_url_discovery.urls_privation import private
+from flask_url_discovery.app_registry import discover_urls
+
 
 app1_simple_case_links = ['test_route1', 'static']
 

@@ -51,7 +51,7 @@ class RegistrationTest(TestBase):
 
         discover_urls_mock = Mock()
 
-        with patch('flask_url_discovery.flask_url_discovery.app_registry.discover_urls', new=discover_urls_mock):
+        with patch('flask_url_discovery.app_registry.discover_urls', new=discover_urls_mock):
             url_discovery(self.app1)
             self.app1.run()
             discover_urls_mock.assert_called_once()

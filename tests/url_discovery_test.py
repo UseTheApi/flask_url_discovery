@@ -2,7 +2,7 @@
 
 from .test_base import TestBase
 
-from ..flask_url_discovery.app_registry import discover_urls
+from flask_url_discovery.app_registry import discover_urls
 
 __author__ = "Alena Lifar"
 __email__ = "alenaslifar@gmail.com"
