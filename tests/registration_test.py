@@ -3,7 +3,7 @@
 from flask import Flask
 
 from .test_base import TestBase
-from ..flask_url_discovery.app_registry import url_discovery
+from flask_url_discovery.app_registry import url_discovery
 
 from unittest.mock import Mock, patch
 from multiprocessing import Process
