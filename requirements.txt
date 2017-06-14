@@ -1,1 +1,4 @@
 Flask>=0.9
+pytest>=3.0
+requests>=2.13
+mock>=2.0

@@ -15,7 +15,7 @@ app1_private_blueprint_links = ['static']
 class TestPrivateUrls(TestBase):
 
     def setUp(self):
-        super().setUp()
+        TestBase.setUp(self)
 
     def test_PrivateLink(self):
         """
@@ -37,7 +37,7 @@ class TestPrivateUrls(TestBase):
 
         discover_urls(self.app1)
         print("Collected Links: ", self.app1.ud_links)
-        self.assertEqual(list(self.app1.ud_links.keys()), app1_simple_case_links)
+        self.assertEqual(sorted(list(self.app1.ud_links.keys())), sorted(app1_simple_case_links))
 
     def test_PrivateLink_CustomEndpoint(self):
         """
@@ -59,7 +59,7 @@ class TestPrivateUrls(TestBase):
 
         discover_urls(self.app1)
         print("Collected Links: ", self.app1.ud_links)
-        self.assertEqual(list(self.app1.ud_links.keys()), app1_simple_case_links)
+        self.assertEqual(sorted(list(self.app1.ud_links.keys())), sorted(app1_simple_case_links))
 
     def test_PrivateBlueprint(self):
         """
@@ -79,4 +79,4 @@ class TestPrivateUrls(TestBase):
 
         discover_urls(app2)
         print("Collected Links: ", app2.ud_links)
-        self.assertEqual(list(app2.ud_links.keys()), app1_private_blueprint_links)
+        self.assertEqual(sorted(list(app2.ud_links.keys())), sorted(app1_private_blueprint_links))

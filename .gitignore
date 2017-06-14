@@ -23,3 +23,5 @@ docs/_build/
 build
 dist
 Flask_UrlDiscovery.egg-info
+.eggs
+

@@ -5,7 +5,8 @@ from flask import Flask
 from .test_base import TestBase
 from flask_url_discovery.app_registry import url_discovery
 
-from unittest.mock import Mock, patch
+# from unittest.mock import Mock, patch
+from mock import Mock, patch
 from multiprocessing import Process
 import time
 import json
@@ -35,7 +36,7 @@ def setup_helper(service, test_port):
 class RegistrationTest(TestBase):
 
     def setUp(self):
-        super().setUp()
+        TestBase.setUp(self)
         self.app2 = Flask(__name__)
 
     @patch('flask.Flask.run')
@@ -76,7 +77,7 @@ class RegistrationTest(TestBase):
         self.app1.run()
 
         # makes sure that url_discovery blueprint is registered to app
-        self.assertEqual(list(self.app1.ud_links.keys()), app1_simple_case_links)
+        self.assertEqual(sorted(list(self.app1.ud_links.keys())), sorted(app1_simple_case_links))
 
     def test_ApplicationRun(self):
         """
@@ -100,7 +101,7 @@ class RegistrationTest(TestBase):
 
         # matching response
         response_data = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(list(response_data.keys()), app2_links)
+        self.assertEqual(sorted(list(response_data.keys())), sorted(app2_links))
         self.app_process.terminate()
 
 
