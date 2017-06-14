@@ -1,8 +1,6 @@
 #! /bin/usr/python3
 
 from flask import current_app, jsonify
-
-
 from flask_url_discovery import env, utils
 
 __author__ = "Alena Lifar"

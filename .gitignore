@@ -17,4 +17,9 @@ instance/
 # Sphinx documentation
 docs/_build/
 
-.cache/
+*.cache/
+
+# wheel files
+build
+dist
+Flask_UrlDiscovery.egg-info

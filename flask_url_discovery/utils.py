@@ -1,7 +1,6 @@
 #! /bin/usr/python3
 
 from flask import current_app
-
 from flask_url_discovery import urls_privation
 
 __author__ = "Alena Lifar"
