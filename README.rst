@@ -9,6 +9,7 @@ Installation
 Install the extention using ``pip`` or ``easy_install``.
 
 .. code:: bash
+
     $ pip install -U Flask-UrlDiscovery
 
 Usage
@@ -23,6 +24,7 @@ Usage with Flask app and Blueprint
 In order to expose all routes on the system the user only has to register Flask application with ``url_discovery``:
 
 .. code:: python
+
     from flask import Flask, Blueprint
     from flask_url_discovery import url_discovery
 
@@ -50,6 +52,7 @@ By default all of the routes are getting exposed on http://host:port/config/rout
 Here is sample response for **/config/routes/**  ``GET`` request:
 
 .. code:: python
+
     {
         "flask_url_discovery.expose_routes": {
             "active_urls": [
@@ -100,6 +103,7 @@ Custom routes url
 The user can specify custom routes url for url discovery
 
 .. code:: python
+
     from flask import Flask
     from flask_url_discovery import url_discovery
     
@@ -113,6 +117,7 @@ The user can specify custom routes url for url discovery
 Flask UrlDiscovery perfectly works with ``url_prefix`` for Flask Blueprints:
 
 .. code:: python
+
     from flask import Flask, Blueprint
     from flask_url_discovery import url_discovery
 
@@ -135,7 +140,9 @@ Flask UrlDiscovery perfectly works with ``url_prefix`` for Flask Blueprints:
       app.run('0.0.0.0', 5000)
 
 Response:
+
 .. code:: python
+
     <...>
     "my_bp.hello_bp": {
             "active_urls": [
@@ -147,7 +154,7 @@ Response:
                 "HEAD"
             ]
         },
-     <...>
+    <...>
 
 Private routes and Blueprints
 -----------------------------
@@ -157,6 +164,7 @@ The user can private a single route of Flask application/Blueprint as well as a 
 **Usage with ```route()```:**
 
 .. code:: python
+
     from flask import Flask, Blueprint
     from flask_url_discovery import url_discovery, private
 
@@ -190,6 +198,7 @@ The user can private a single route of Flask application/Blueprint as well as a 
 **Usage with Flask Blueprints:**
 
 .. code:: python
+
     from flask import Flask, Blueprint
     from flask_url_discovery import url_discovery, private
 
@@ -228,6 +237,7 @@ Test
 The Package includes a [test suite](tests/). To exercise tests run:
 
 .. code:: bash
+
     python setup.py tests
 
 Contributing
