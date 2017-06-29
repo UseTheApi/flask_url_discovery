@@ -234,7 +234,7 @@ The user can private a single route of Flask application/Blueprint as well as a 
 Test
 ----
 
-The Package includes a `test suite <tests/>`_ . To exercise tests run:
+The Package includes a `test suite <tests/>`_. To exercise tests run:
 
 .. code:: bash
 
