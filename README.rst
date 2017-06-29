@@ -8,7 +8,7 @@ Installation
 
 Install the extention using ``pip`` or ``easy_install``.
 
-  .. code:: bash
+.. code:: bash
     $ pip install -U Flask-UrlDiscovery
 
 Usage
@@ -49,7 +49,7 @@ By default all of the routes are getting exposed on http://host:port/config/rout
 
 Here is sample response for **/config/routes/**  ``GET`` request:
 
-  .. code:: python
+.. code:: python
 {
     "flask_url_discovery.expose_routes": {
         "active_urls": [
@@ -99,7 +99,7 @@ Custom routes url
 
 The user can specify custom routes url for url discovery
 
-  .. code:: python
+.. code:: python
     from flask import Flask
     from flask_url_discovery import url_discovery
     
@@ -112,7 +112,7 @@ The user can specify custom routes url for url discovery
 
 Flask UrlDiscovery perfectly works with ``url_prefix`` for Flask Blueprints:
 
-  .. code:: python
+.. code:: python
 from flask import Flask, Blueprint
 from flask_url_discovery import url_discovery
 
@@ -135,7 +135,7 @@ if __name__ == "__main__":
   app.run('0.0.0.0', 5000)
 
 Response:
-  .. code:: python
+.. code:: python
 <...>
 "my_bp.hello_bp": {
         "active_urls": [
@@ -156,7 +156,7 @@ The user can private a single route of Flask application/Blueprint as well as a 
 
 **Usage with ```route()```:**
 
-```python
+.. code:: python
 from flask import Flask, Blueprint
 from flask_url_discovery import url_discovery, private
 
@@ -184,13 +184,12 @@ def hello_bp():
 if __name__ == "__main__":
     app.register_blueprint(app_bp)
     app.run('0.0.0.0', 5000)
-```
 
-```private_endpoint()``` will not be shown in the response of ```/config/routes/``` request. Same approach is valid for privating a route of a Blueprint.
+``private_endpoint()`` will not be shown in the response of ``/config/routes/`` request. Same approach is valid for privating a route of a Blueprint.
 
 **Usage with Flask Blueprints:**
 
-```python
+.. code:: python
 from flask import Flask, Blueprint
 from flask_url_discovery import url_discovery, private
 
@@ -221,18 +220,15 @@ if __name__ == "__main__":
     app.register_blueprint(app_bp)
     app.run('0.0.0.0', 5000)
 
-```
-
-```app_bp``` Blueprint is fully **private** now and none of the routes belong to this Blueprint will be exposed through API by UrlDiscovery
+``app_bp`` Blueprint is fully **private** now and none of the routes belong to this Blueprint will be exposed through API by UrlDiscovery
 
 Test
 ----
 
 The Package includes a [test suite](tests/). To exercise tests run:
 
-```bash
+.. code:: bash
 python setup.py tests
-```
 
 Contributing
 ------------
