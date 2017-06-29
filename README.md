@@ -186,7 +186,7 @@ if __name__ == "__main__":
     app.run('0.0.0.0', 5000)
 ```
 
-```private_endpoint()``` will not be shown in the response on ```/config/routes/``` request
+```private_endpoint()``` will not be shown in the response of ```/config/routes/``` request. Same approach is valid for privating a route of a Blueprint.
 
 **Usage with Flask Blueprints:**
 
