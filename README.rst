@@ -234,7 +234,7 @@ The user can private a single route of Flask application/Blueprint as well as a 
 Test
 ----
 
-The Package includes a [test suite](tests/). To exercise tests run:
+The Package includes a `test suite <tests/>`_ . To exercise tests run:
 
 .. code:: bash
 
@@ -243,4 +243,4 @@ The Package includes a [test suite](tests/). To exercise tests run:
 Contributing
 ------------
 
-If you have any questions, find any bugs/problems or have an idea of an improvement, please create an issue on [GitHub](https://github.com/UseTheApi/flask_url_discovery) and/or send me an e-mail.
+If you have any questions, find any bugs/problems or have an idea of an improvement, please create an issue on `GitHub <https://github.com/UseTheApi/flask_url_discovery>`_ and/or send me an e-mail.
