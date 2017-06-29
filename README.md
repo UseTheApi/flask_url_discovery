@@ -47,6 +47,52 @@ In order to expose all routes on the system the user only has to register Flask 
 
 By default all of the routes are getting exposed on http://host::port/**config/routes/**
 
+Here is sample response for **/config/routes/** request:
+
+.. code:: json
+    {
+        "flask_url_discovery.expose_routes": {
+            "active_urls": [
+                "/config/routes/"
+            ],
+            "methods": [
+                "GET",
+                "OPTIONS",
+                "HEAD"
+            ]
+        },
+        "hello_bp": {
+            "active_urls": [
+                "/hello/"
+            ],
+            "methods": [
+                "GET",
+                "OPTIONS",
+                "HEAD"
+            ]
+        },
+        "hello_world": {
+            "active_urls": [
+                "/"
+            ],
+            "methods": [
+                "GET",
+                "OPTIONS",
+                "HEAD"
+            ]
+        },
+        "static": {
+            "active_urls": [
+                "/static/<path:filename>"
+            ],
+            "methods": [
+                "GET",
+                "OPTIONS",
+                "HEAD"
+            ]
+        }
+    }
+
 When making a ``GET`` request on ``/config/routes/`` 
 
 Custom routes url
