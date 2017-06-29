@@ -25,3 +25,5 @@ dist
 Flask_UrlDiscovery.egg-info
 .eggs
 
+# PiPy files
+.pypirc
