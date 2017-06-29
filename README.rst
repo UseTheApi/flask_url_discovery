@@ -1,2 +1,66 @@
-# Flask Url Discovery
-flask extension for discovering urls in a service
+Flask Url Discovery
+===================
+
+A Flask extension for discovering urls in a service and expose service's routes for others.
+
+Installation
+------------
+
+Install the extention using ``pip`` or ``easy_install``.
+
+.. code:: bash
+
+    $ pip install -U Flask-UrlDiscovery
+    
+Usage
+-----
+
+This package exposes a Flask extention that allows the user to automatically collect all (by default) routes that are created by Flask application or a Blueprint. The user can provide a custom uri string for exposing routes on the system as well as restrict the access to some routes or Blueprints.
+
+Usage with Flask app and Blueprint
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In order to expose all routes on the system the user only has to register Flask application with ``url_discovery``:
+
+.. code:: python
+
+    from flask import Flask, Blueprint
+    from flask_url_discovery import url_discovery
+    
+    app = Flask(__name__)
+    url_discovery(app)
+    
+    app_bp = Blueprint("my_bp", __name__)
+    
+    
+    @app.route("/")
+    def hello_world():
+      return "Hello World!"
+      
+    @app.route("/hello/")
+    def hello_bp():
+      return "Hello Flask Blueprint"
+     
+    if __name__ == "__main__":
+      app.register_blueprint(app_bp)
+      app.run('0.0.0.0', 5000)
+
+By default all of the routes are getting exposed on http://host::port/**config/routes/**
+
+When making a ``GET`` request on ``/config/routes/`` 
+
+Custom routes url
+`````````````````
+.. code:: python
+
+    from flask import Flask
+    from flask_url_discovery import url_discovery
+    
+    app = Flask(__name__)
+    url_discovery(app, custom_routes_url="/your_custom_routes_url/")
+    
+    @app.route("/")
+    def helloWorld():
+      return "Hello World!"
+
+
