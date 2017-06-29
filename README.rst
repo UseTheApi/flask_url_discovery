@@ -1,25 +1,28 @@
-# Flask Url Discovery
+Flask Url Discovery
+===================
 
 A Flask extension for discovering urls in a service and expose service's routes for others.
 
-## Installation
+Installation
+------------
 
 Install the extention using ``pip`` or ``easy_install``.
 
-```bash
-$ pip install -U Flask-UrlDiscovery
-```
+  .. code:: bash
+    $ pip install -U Flask-UrlDiscovery
 
-## Usage
+Usage
+-----
 
 This package exposes a Flask extention that allows the user to automatically collect all (by default) routes that are created by Flask application or a Blueprint. The user can provide a custom uri string for exposing routes on the system as well as restrict the access to some routes or Blueprints.
 
 
-### Usage with Flask app and Blueprint
+Usage with Flask app and Blueprint
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In order to expose all routes on the system the user only has to register Flask application with ```url_discovery```:
+In order to expose all routes on the system the user only has to register Flask application with ``url_discovery``:
 
-```python
+.. code:: python
 from flask import Flask, Blueprint
 from flask_url_discovery import url_discovery
 
@@ -41,13 +44,12 @@ def hello_bp():
 if __name__ == '__main__':
   app.register_blueprint(app_bp)
   app.run('0.0.0.0', 5000)
-```
 
 By default all of the routes are getting exposed on http://host:port/config/routes/
 
-Here is sample response for **/config/routes/**  ```GET``` request:
+Here is sample response for **/config/routes/**  ``GET`` request:
 
-```json
+  .. code:: python
 {
     "flask_url_discovery.expose_routes": {
         "active_urls": [
@@ -91,13 +93,13 @@ Here is sample response for **/config/routes/**  ```GET``` request:
         ]
     }
 }
-```
 
-### Custom routes url
+Custom routes url
+-----------------
 
 The user can specify custom routes url for url discovery
 
-```python
+  .. code:: python
     from flask import Flask
     from flask_url_discovery import url_discovery
     
@@ -107,11 +109,10 @@ The user can specify custom routes url for url discovery
     @app.route('/')
     def helloWorld():
       return "Hello World!"
-```
 
-Flask UrlDiscovery perfectly works with ```url_prefix``` for Flask Blueprints:
+Flask UrlDiscovery perfectly works with ``url_prefix`` for Flask Blueprints:
 
-```python
+  .. code:: python
 from flask import Flask, Blueprint
 from flask_url_discovery import url_discovery
 
@@ -132,10 +133,9 @@ def hello_bp():
 if __name__ == "__main__":
   app.register_blueprint(app_bpm url_prefix='/custom_prefix')
   app.run('0.0.0.0', 5000)
-```
 
 Response:
-```json
+  .. code:: python
 <...>
 "my_bp.hello_bp": {
         "active_urls": [
@@ -148,9 +148,9 @@ Response:
         ]
     },
  <...>
-```
 
-### Private routes and Blueprints
+Private routes and Blueprints
+-----------------------------
 
 The user can private a single route of Flask application/Blueprint as well as a whole Blueprint. Flask UrlDiscovery provides a decorator function.
 
@@ -225,7 +225,8 @@ if __name__ == "__main__":
 
 ```app_bp``` Blueprint is fully **private** now and none of the routes belong to this Blueprint will be exposed through API by UrlDiscovery
 
-## Test
+Test
+----
 
 The Package includes a [test suite](tests/). To exercise tests run:
 
@@ -233,6 +234,7 @@ The Package includes a [test suite](tests/). To exercise tests run:
 python setup.py tests
 ```
 
-## Contributing
+Contributing
+------------
 
 If you have any questions, find any bugs/problems or have an idea of an improvement, please create an issue on [GitHub](https://github.com/UseTheApi/flask_url_discovery) and/or send me an e-mail.
