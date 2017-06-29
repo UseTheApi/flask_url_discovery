@@ -33,7 +33,7 @@ app_bp = Blueprint("my_bp", __name__)
 def hello_world():
   return "Hello World!"
 
-@app.route("/hello/")
+@app_bp.route("/hello/")
 def hello_bp():
   return "Hello Flask Blueprint"
 
@@ -54,18 +54,8 @@ Here is sample response for **/config/routes/**  ```GET``` request:
         ],
         "methods": [
             "GET",
-            "OPTIONS",
-            "HEAD"
-        ]
-    },
-    "hello_bp": {
-        "active_urls": [
-            "/hello/"
-        ],
-        "methods": [
-            "GET",
-            "OPTIONS",
-            "HEAD"
+            "HEAD",
+            "OPTIONS"
         ]
     },
     "hello_world": {
@@ -74,8 +64,18 @@ Here is sample response for **/config/routes/**  ```GET``` request:
         ],
         "methods": [
             "GET",
-            "OPTIONS",
-            "HEAD"
+            "HEAD",
+            "OPTIONS"
+        ]
+    },
+    "my_bp.hello_bp": {
+        "active_urls": [
+            "/hello/"
+        ],
+        "methods": [
+            "GET",
+            "HEAD",
+            "OPTIONS"
         ]
     },
     "static": {
@@ -84,19 +84,18 @@ Here is sample response for **/config/routes/**  ```GET``` request:
         ],
         "methods": [
             "GET",
-            "OPTIONS",
-            "HEAD"
+            "HEAD",
+            "OPTIONS"
         ]
     }
 }
 ```
 
-#### Custom routes url
+### Custom routes url
 
 The user can specify custom routes url for url discovery
 
 ```python
-
     from flask import Flask
     from flask_url_discovery import url_discovery
     
@@ -107,5 +106,48 @@ The user can specify custom routes url for url discovery
     def helloWorld():
       return "Hello World!"
 ```
+
+Flask UrlDiscovery perfectly works with ```url_prefix``` for Flask Blueprints:
+
+```python
+from flask import Flask, Blueprint
+from flask_url_discovery import url_discovery
+
+app = Flask(__name__)
+url_discovery(app)
+
+app_bp = Blueprint("my_bp", __name__)
+
+
+@app.route("/")
+def hello_world():
+  return "Hello World!"
+
+@app_bp.route("/hello/")
+def hello_bp():
+  return "Hello Flask Blueprint"
+
+if __name__ == "__main__":
+  app.register_blueprint(app_bpm url_prefix="/custom_prefix")
+  app.run('0.0.0.0', 5000)
+```
+
+Response:
+```json
+<...>
+"my_bp.hello_bp": {
+        "active_urls": [
+            "/custom_prefix/hello/"
+        ],
+        "methods": [
+            "GET",
+            "OPTIONS",
+            "HEAD"
+        ]
+    },
+ <...>
+```
+
+### Private routes and Blueprints
 
 
