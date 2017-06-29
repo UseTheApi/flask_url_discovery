@@ -26,23 +26,24 @@ from flask_url_discovery import url_discovery
 app = Flask(__name__)
 url_discovery(app)
 
-app_bp = Blueprint("my_bp", __name__)
+app_bp = Blueprint('my_bp', __name__)
 
 
-@app.route("/")
+@app.route('/')
+@app.route('/health_check/')
 def hello_world():
-  return "Hello World!"
+  return 'Hello World!'
 
-@app_bp.route("/hello/")
+@app_bp.route('/hello/')
 def hello_bp():
-  return "Hello Flask Blueprint"
+  return 'Hello Flask Blueprint'
 
-if __name__ == "__main__":
+if __name__ == '__main__':
   app.register_blueprint(app_bp)
   app.run('0.0.0.0', 5000)
 ```
 
-By default all of the routes are getting exposed on http://host::port/**config/routes/**
+By default all of the routes are getting exposed on http://host:port/config/routes/
 
 Here is sample response for **/config/routes/**  ```GET``` request:
 
@@ -60,7 +61,8 @@ Here is sample response for **/config/routes/**  ```GET``` request:
     },
     "hello_world": {
         "active_urls": [
-            "/"
+            "/",
+            "/health_check/"
         ],
         "methods": [
             "GET",
@@ -100,9 +102,9 @@ The user can specify custom routes url for url discovery
     from flask_url_discovery import url_discovery
     
     app = Flask(__name__)
-    url_discovery(app, custom_routes_url="/your_custom_routes_url/")
+    url_discovery(app, custom_routes_url='/your_custom_routes_url/')
     
-    @app.route("/")
+    @app.route('/')
     def helloWorld():
       return "Hello World!"
 ```
@@ -116,19 +118,19 @@ from flask_url_discovery import url_discovery
 app = Flask(__name__)
 url_discovery(app)
 
-app_bp = Blueprint("my_bp", __name__)
+app_bp = Blueprint('my_bp', __name__)
 
 
-@app.route("/")
+@app.route('/')
 def hello_world():
-  return "Hello World!"
+  return 'Hello World!'
 
-@app_bp.route("/hello/")
+@app_bp.route('/hello/')
 def hello_bp():
-  return "Hello Flask Blueprint"
+  return 'Hello Flask Blueprint'
 
 if __name__ == "__main__":
-  app.register_blueprint(app_bpm url_prefix="/custom_prefix")
+  app.register_blueprint(app_bpm url_prefix='/custom_prefix')
   app.run('0.0.0.0', 5000)
 ```
 
