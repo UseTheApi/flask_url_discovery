@@ -224,3 +224,15 @@ if __name__ == "__main__":
 ```
 
 ```app_bp``` Blueprint is fully **private** now and none of the routes belong to this Blueprint will be exposed through API by UrlDiscovery
+
+## Test
+
+The Package includes a [test suite](tests/). To exercise tests run:
+
+```bash
+python setup.py tests
+```
+
+## Contributing
+
+If you have any questions, find any bugs/problems or have an idea of an improvement, please create an issue on [GitHub](https://github.com/UseTheApi/flask_url_discovery) and/or send me an e-mail.
