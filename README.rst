@@ -239,6 +239,11 @@ The Package includes a `test suite <tests/>`_. To exercise tests run:
 .. code:: bash
 
     python setup.py tests
+    
+Docs
+----
+
+The package is provided with Sphinx documentation. To create a documentation execute ``make html`` in `docs <docs/>`_ directory.
 
 Contributing
 ------------
