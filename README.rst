@@ -161,7 +161,7 @@ Private routes and Blueprints
 
 The user can private a single route of Flask application/Blueprint as well as a whole Blueprint. Flask UrlDiscovery provides a decorator function.
 
-**Usage with ```route()```:**
+**Usage with route():**
 
 .. code:: python
 
