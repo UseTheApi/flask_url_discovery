@@ -265,7 +265,7 @@ The user can private a single route of Flask application/Blueprint as well as a 
 Test
 ----
 
-The Package includes a `test suite <tests/>`_. To exercise tests run:
+The Package includes a `test suite <https://github.com/UseTheApi/flask_url_discovery/tree/master/tests>`_. To exercise tests run:
 
 .. code:: bash
 
@@ -274,7 +274,7 @@ The Package includes a `test suite <tests/>`_. To exercise tests run:
 Docs
 ----
 
-The package is provided with Sphinx documentation. To create a documentation execute ``make html`` in `docs <docs/>`_ directory.
+The package is provided with Sphinx documentation. To create a documentation execute ``make html`` in `docs <https://github.com/UseTheApi/flask_url_discovery/tree/master/docs>`_ directory.
 
 Contributing
 ------------
