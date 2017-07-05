@@ -15,7 +15,7 @@ Install the extention using ``pip`` or ``easy_install``.
 Usage
 -----
 
-This package exposes a Flask extention that allows the user to automatically collect all (by default) routes that are created by Flask application or a Blueprint. The user can provide a custom uri string for exposing routes on the system as well as restrict the access to some routes or Blueprints.
+This package exposes a Flask extention that allows the user to automatically collect all (by default) routes that are created by Flask application or a Blueprint. The user can provide a custom uri string for exposing routes on the system as well as **restrict** the access to some routes or Blueprints.
 
 
 Usage with Flask app and Blueprint
