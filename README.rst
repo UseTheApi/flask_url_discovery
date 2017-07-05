@@ -43,11 +43,11 @@ In order to expose all routes on the system the user only has to register Flask 
     def hello_bp():
       return 'Hello Flask Blueprint'
 
-    if __name__ == '__main__':
+    if __name__ == "__main__":
       app.register_blueprint(app_bp)
       app.run('0.0.0.0', 5000)
 
-By default all of the routes are getting exposed on http://host:port/config/routes/
+By default all of the routes are getting exposed on http://{host:port}/config/routes/
 
 Here is sample response for **/config/routes/**  ``GET`` request:
 
@@ -96,6 +96,37 @@ Here is sample response for **/config/routes/**  ``GET`` request:
             ]
         }
     }
+    
+Make a use of ``enpoint`` parameter to encapsulate a function name:
+
+.. code:: python
+    
+    from flask import Flask
+    from flask_url_discovery import url_discovery
+    
+    app = Flask(__name__)
+    url_discovery(app)
+    
+    @app.route('/hello_world/', endpoint='custom_endpoint')
+    def hello_world():
+        return 'Hello World!'
+        
+**/config/routes/** response:
+
+.. code:: python
+
+    <...>
+    "custom_endpoint": {
+            "active_urls": [
+                "/hello_world/"
+            ],
+            "methods": [
+                "GET",
+                "HEAD",
+                "OPTIONS"
+            ]
+        },
+    <...>
 
 Custom routes url
 -----------------
@@ -111,8 +142,8 @@ The user can specify custom routes url for url discovery
     url_discovery(app, custom_routes_url='/your_custom_routes_url/')
     
     @app.route('/')
-    def helloWorld():
-      return "Hello World!"
+    def hello_world():
+      return 'Hello World!'
 
 Flask UrlDiscovery perfectly works with ``url_prefix`` for Flask Blueprints:
 
@@ -136,10 +167,10 @@ Flask UrlDiscovery perfectly works with ``url_prefix`` for Flask Blueprints:
       return 'Hello Flask Blueprint'
 
     if __name__ == "__main__":
-      app.register_blueprint(app_bpm url_prefix='/custom_prefix')
+      app.register_blueprint(app_bpm, url_prefix='/custom_prefix')
       app.run('0.0.0.0', 5000)
 
-Response:
+**/config/routes/** response:
 
 .. code:: python
 
@@ -171,23 +202,23 @@ The user can private a single route of Flask application/Blueprint as well as a 
     app = Flask(__name__)
     url_discovery(app)
 
-    app_bp = Blueprint("my_bp", __name__)
+    app_bp = Blueprint('my_bp', __name__)
 
 
-    @app.route("/")
+    @app.route('/')
     def hello_world():
-        return "Hello World!"
+        return 'Hello World!'
 
 
     @private()
-    @app.route("/restricted_route/")
+    @app.route('/restricted_route/')
     def private_endpoint():
-        return "Hello Private Endpoint"
+        return 'Hello Private Endpoint'
 
 
-    @app_bp.route("/hello/")
+    @app_bp.route('/hello/')
     def hello_bp():
-        return "Hello Flask Blueprint"
+        return 'Hello Flask Blueprint'
 
     if __name__ == "__main__":
         app.register_blueprint(app_bp)
@@ -205,22 +236,22 @@ The user can private a single route of Flask application/Blueprint as well as a 
     app = Flask(__name__)
     url_discovery(app)
 
-    # or: app_bp = private(Blueprint("my_bp", __name__))
-    app_bp = Blueprint("my_bp", __name__)
+    # or: app_bp = private(Blueprint('my_bp', __name__))
+    app_bp = Blueprint('my_bp', __name__)
     private(app_bp)
 
 
-    @app.route("/")
+    @app.route('/')
     def hello_world():
-        return "Hello World!"
+        return 'Hello World!'
 
 
-    @app_bp.route("/private/hello/")
+    @app_bp.route('/private/hello/')
     def hello_bp():
         return "Hello Flask Blueprint"
 
 
-    @app_bp.route("/private/goodbye/")
+    @app_bp.route('/private/goodbye/')
     def bye_bp():
         return "Goodbye Moonmen"
 
