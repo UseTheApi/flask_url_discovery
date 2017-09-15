@@ -14,4 +14,4 @@ from .app_registry import url_discovery
 from .urls_privation import private
 
 __author__ = "Alena Lifar"
-__version__ = '1.1.0'
+__version__ = '1.1.1'
